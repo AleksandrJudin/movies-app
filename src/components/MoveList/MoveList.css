@@ -5,3 +5,8 @@
   grid-row-gap: 35px;
   list-style: none;
 }
+
+.ant-spin-spinning {
+  margin: 0;
+  display: block;
+}

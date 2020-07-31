@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import MoveListItem from '../MoveListItem';
+import { Spin, Alert } from 'antd';
+import 'antd/dist/antd.css';
 import './MoveList.css';
 
 export default class MoveList extends Component {
@@ -30,6 +32,18 @@ export default class MoveList extends Component {
   };
 
   render() {
-    return <ul className='movies__list'>{this.createMoveList()}</ul>;
+    const { isError, isLoaded } = this.props;
+    const moveList = <ul className='movies__list'>{this.createMoveList()}</ul>;
+    const content = isLoaded ? <Spin /> : moveList;
+    const errAlert = (
+      <Alert
+        message='Ошибка :('
+        description='Не могу получить данные с сервера'
+        type='error'
+        showIcon
+      />
+    );
+
+    return isError ? errAlert : content;
   }
 }

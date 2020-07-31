@@ -5,6 +5,11 @@ export default class {
 
   getMoveData = async (url) => {
     const res = await fetch(url);
+
+    if (!res.ok) {
+      throw new Error(`Data is not correct ${res.status}`);
+    }
+
     const data = await res.json();
     return data;
   };

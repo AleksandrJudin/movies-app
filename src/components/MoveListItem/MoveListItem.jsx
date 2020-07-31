@@ -6,20 +6,23 @@ export default class MoveListItem extends Component {
     if (str.length > 125) {
       return str.substring(0, 124) + '...';
     }
+    if (str.length === 0) {
+      return 'Информация отсутсвует';
+    }
     return str;
   };
 
   render() {
-    const { poster, release, title, score, overview } = this.props;
+    const { poster, title, score, overview } = this.props;
+
+    const moveImg = poster
+      ? `https://image.tmdb.org/t/p/original${poster}`
+      : 'https://upload.wikimedia.org/wikipedia/ru/a/ac/No_image_available.svg';
 
     return (
       <React.Fragment>
         <a href='./ds' className='movies__link'>
-          <img
-            src={`https://image.tmdb.org/t/p/original${poster}`}
-            alt=''
-            className='movies__image'
-          />
+          <img src={moveImg} alt='' className='movies__image' />
         </a>
         <div className='movies__info'>
           <div className='card__wrapper'>

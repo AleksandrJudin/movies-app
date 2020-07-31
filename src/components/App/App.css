@@ -1,0 +1,13 @@
+.v-hidden {
+  visibility: hidden;
+  font-size: 0;
+}
+
+.container {
+  width: 1010px;
+  margin: 0 auto;
+}
+
+.movies {
+  margin-top: 30px;
+}

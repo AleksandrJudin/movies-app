@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import MoveListItem from '../MoveListItem';
-import { Spin, Alert } from 'antd';
+import { Spin, Alert, Pagination, Empty } from 'antd';
 import 'antd/dist/antd.css';
 import './MoveList.css';
 
@@ -31,10 +31,44 @@ export default class MoveList extends Component {
     });
   };
 
+  handleMoveListRender = () => {
+    const { keyword } = this.props;
+    let result = null;
+    if (keyword) {
+      result = <ul className='movies__list'>{this.createMoveList()}</ul>;
+    } else {
+      result = <h1>Введите название фильма, блеать!</h1>;
+    }
+    return result;
+  };
+
+  handleChangePages = (n) => {
+    this.props.changePages(n);
+  };
+
+  createPaginations = () => {
+    const { totalPages, totalResults, keyword, isLoaded } = this.props;
+    if (totalResults > 20 && keyword && !isLoaded) {
+      return (
+        <Pagination
+          defaultCurrent={1}
+          defaultPageSize={20}
+          total={totalResults}
+          size={totalPages}
+          onChange={this.handleChangePages}
+        />
+      );
+    }
+  };
+
   render() {
-    const { isError, isLoaded } = this.props;
-    const moveList = <ul className='movies__list'>{this.createMoveList()}</ul>;
-    const content = isLoaded ? <Spin /> : moveList;
+    const { isError, isLoaded, totalResults, keyword } = this.props;
+
+    const content =
+      isLoaded && keyword ? <Spin size='large' /> : this.handleMoveListRender();
+
+    const nothingFound = !totalResults && keyword && !isLoaded && <Empty />;
+
     const errAlert = (
       <Alert
         message='Ошибка :('
@@ -44,6 +78,12 @@ export default class MoveList extends Component {
       />
     );
 
-    return isError ? errAlert : content;
+    return (
+      <React.Fragment>
+        {isError ? errAlert : content}
+        {!isError && nothingFound}
+        {this.createPaginations()}
+      </React.Fragment>
+    );
   }
 }

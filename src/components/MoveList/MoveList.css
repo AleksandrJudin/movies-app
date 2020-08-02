@@ -1,12 +1,22 @@
 .movies__list {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-column-gap: 35px;
-  grid-row-gap: 35px;
+  grid-column-gap: 100px;
+  grid-row-gap: 45px;
   list-style: none;
+  padding: 0;
 }
 
 .ant-spin-spinning {
   margin: 0;
   display: block;
+  margin-top: 40px;
+}
+
+.ant-select {
+  display: none;
+}
+
+.ant-pagination-options {
+  display: none;
 }

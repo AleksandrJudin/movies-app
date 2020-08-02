@@ -17,7 +17,7 @@ export default class MoveListItem extends Component {
 
     const moveImg = poster
       ? `https://image.tmdb.org/t/p/original${poster}`
-      : 'https://upload.wikimedia.org/wikipedia/ru/a/ac/No_image_available.svg';
+      : 'https://st.kp.yandex.net/images/movies/poster_none.png';
 
     return (
       <React.Fragment>

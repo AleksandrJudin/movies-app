@@ -37,7 +37,7 @@ export default class MoveList extends Component {
     if (keyword) {
       result = <ul className='movies__list'>{this.createMoveList()}</ul>;
     } else {
-      result = <h1>Введите название фильма, блеать!</h1>;
+      result = <h1>Введите название фильма</h1>;
     }
     return result;
   };

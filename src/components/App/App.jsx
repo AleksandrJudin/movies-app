@@ -2,31 +2,58 @@ import React, { Component } from 'react';
 import MoveList from '../MoveList/MoveList';
 import moviesData from '../../moviesData';
 import SearchPanel from '../SearchPanel';
+import { Tabs } from 'antd';
 import { debounce } from 'lodash';
 import './App.css';
 
 export default class App extends Component {
   state = {
-    keyword: 'Batman',
+    keyword: '',
     isLoaded: true,
     isError: false,
     pages: 1,
     totalResults: null,
+    sessionId: null,
     moveData: [],
+    ratedData: [],
   };
 
   moveApi = new moviesData();
 
   componentDidMount() {
+    this.getGuestSessionId();
     this.updateMove(this.state.pages);
   }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { keyword, pages, ratedData } = this.state;
+    if (keyword !== prevState.keyword) {
+      this.updateMove();
+    }
+    if (pages !== prevState.pages) {
+      this.updateMove(pages);
+    }
+  }
+
+  getGuestSessionId = () => {
+    this.moveApi.getGuestSessionId().then((data) => {
+      this.setState({
+        sessionId: data.guest_session_id,
+      });
+    });
+  };
+
+  handleAddRatingMovie = (moveId, value) => {
+    this.moveApi.setRatedMovies(moveId, this.state.sessionId, value);
+    this.getGuestSessionRatedMovies(this.state.sessionId);
+  };
 
   changeKeyword = debounce((value) => {
     this.setState({
       keyword: value,
       isLoaded: true,
     });
-  }, 700);
+  }, 800);
 
   handleError = (err) => {
     this.setState({
@@ -41,25 +68,13 @@ export default class App extends Component {
     });
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    const { keyword, pages } = this.state;
-    if (keyword !== prevState.keyword) {
-      this.updateMove();
-    }
-    if (pages !== prevState.pages) {
-      this.updateMove(pages);
-    }
-  }
-
   updateMove = (pages = 1) => {
     const { keyword } = this.state;
     if (keyword) {
       this.moveApi
         .getMoveByKeyword(keyword, pages)
         .then((data) => {
-          console.log(data);
           const { results, total_results, total_pages } = data;
-
           this.setState({
             moveData: results,
             totalResults: total_results,
@@ -71,24 +86,55 @@ export default class App extends Component {
     }
   };
 
+  getGuestSessionRatedMovies = debounce((sessionId) => {
+    this.moveApi.getGuestSessionRatedMovies(sessionId).then((data) => {
+      this.setState({
+        ratedData: data.results,
+      });
+    });
+  }, 1000);
+
   render() {
-    const { keyword, moveData, isLoaded, isError, totalResults } = this.state;
+    const {
+      keyword,
+      moveData,
+      isLoaded,
+      isError,
+      totalResults,
+      ratedData,
+    } = this.state;
+    const { TabPane } = Tabs;
     return (
       <div className='container'>
-        <SearchPanel
-          changeKeyword={this.changeKeyword}
-          keyword={this.state.keyword}
-        />
-        <section className='movies'>
-          <MoveList
-            keyword={keyword}
-            moveData={moveData}
-            isLoaded={isLoaded}
-            isError={isError}
-            totalResults={totalResults}
-            changePages={this.changePages}
-          />
-        </section>
+        <Tabs defaultActiveKey='1'>
+          <TabPane tab='Search' key='1'>
+            <SearchPanel
+              changeKeyword={this.changeKeyword}
+              keyword={this.state.keyword}
+            />
+            <MoveList
+              handleAddRatingMovie={this.handleAddRatingMovie}
+              keyword={keyword}
+              moveData={moveData}
+              isLoaded={isLoaded}
+              isError={isError}
+              totalResults={totalResults}
+              changePages={this.changePages}
+              tab='search'
+            />
+          </TabPane>
+          <TabPane tab='Rated' key='2'>
+            <MoveList
+              handleAddRatingMovie={this.handleAddRatingMovie}
+              keyword={keyword}
+              moveData={ratedData}
+              isLoaded={isLoaded}
+              isError={isError}
+              totalResults={totalResults}
+              changePages={this.changePages}
+            />
+          </TabPane>
+        </Tabs>
       </div>
     );
   }

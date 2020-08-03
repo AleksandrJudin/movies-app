@@ -6,7 +6,7 @@ import './MoveList.css';
 
 export default class MoveList extends Component {
   createMoveList = () => {
-    const { moveData } = this.props;
+    const { moveData, handleAddRatingMovie, tab } = this.props;
     console.log(moveData);
     return moveData.map((moveData) => {
       const {
@@ -17,14 +17,18 @@ export default class MoveList extends Component {
         vote_average,
         overview,
       } = moveData;
+
       return (
         <li className='movies__card' key={id}>
           <MoveListItem
+            id={id}
             poster={poster_path}
             release={release_date}
             title={title}
             score={vote_average}
             overview={overview}
+            handleAddRatingMovie={handleAddRatingMovie}
+            tab={tab}
           />
         </li>
       );
@@ -32,12 +36,16 @@ export default class MoveList extends Component {
   };
 
   handleMoveListRender = () => {
-    const { keyword } = this.props;
+    const { keyword, tab } = this.props;
     let result = null;
     if (keyword) {
       result = <ul className='movies__list'>{this.createMoveList()}</ul>;
     } else {
-      result = <h1>Введите название фильма, блеать!</h1>;
+      if (tab) {
+        result = <h2 className='main-title'>Введите название фильма</h2>;
+      } else {
+        result = <h2 className='main-title'>Ничего нет... :(</h2>;
+      }
     }
     return result;
   };
@@ -62,7 +70,7 @@ export default class MoveList extends Component {
   };
 
   render() {
-    const { isError, isLoaded, totalResults, keyword } = this.props;
+    const { isError, isLoaded, totalResults, keyword, tab } = this.props;
 
     const content =
       isLoaded && keyword ? <Spin size='large' /> : this.handleMoveListRender();
@@ -79,11 +87,11 @@ export default class MoveList extends Component {
     );
 
     return (
-      <React.Fragment>
+      <section className='movies'>
         {isError ? errAlert : content}
         {!isError && nothingFound}
-        {this.createPaginations()}
-      </React.Fragment>
+        {tab && this.createPaginations()}
+      </section>
     );
   }
 }

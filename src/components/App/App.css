@@ -11,3 +11,8 @@
 .movies {
   margin-top: 30px;
 }
+
+.ant-tabs > .ant-tabs-nav,
+.ant-tabs > div > .ant-tabs-nav {
+  margin: 0 auto;
+}

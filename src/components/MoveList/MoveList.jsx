@@ -3,11 +3,16 @@ import MoveListItem from '../MoveListItem';
 import { Spin, Alert, Pagination, Empty } from 'antd';
 import 'antd/dist/antd.css';
 import './MoveList.css';
+import PropTypes from 'prop-types';
 
 export default class MoveList extends Component {
+  static defaultProps = {
+    moveData: [],
+    handleAddRatingMovie: () => {},
+  };
+
   createMoveList = () => {
-    const { moveData, handleAddRatingMovie, tab } = this.props;
-    console.log(moveData);
+    const { moveData, handleAddRatingMovie } = this.props;
     return moveData.map((moveData) => {
       const {
         poster_path,
@@ -16,6 +21,7 @@ export default class MoveList extends Component {
         title,
         vote_average,
         overview,
+        genre_ids,
       } = moveData;
 
       return (
@@ -28,7 +34,7 @@ export default class MoveList extends Component {
             score={vote_average}
             overview={overview}
             handleAddRatingMovie={handleAddRatingMovie}
-            tab={tab}
+            genreIds={genre_ids}
           />
         </li>
       );
@@ -36,16 +42,12 @@ export default class MoveList extends Component {
   };
 
   handleMoveListRender = () => {
-    const { keyword, tab } = this.props;
+    const { keyword } = this.props;
     let result = null;
     if (keyword) {
       result = <ul className='movies__list'>{this.createMoveList()}</ul>;
     } else {
-      if (tab) {
-        result = <h2 className='main-title'>Введите название фильма</h2>;
-      } else {
-        result = <h2 className='main-title'>Ничего нет... :(</h2>;
-      }
+      result = <h2 className='main-title'>Введите название фильма</h2>;
     }
     return result;
   };
@@ -70,7 +72,7 @@ export default class MoveList extends Component {
   };
 
   render() {
-    const { isError, isLoaded, totalResults, keyword, tab } = this.props;
+    const { isError, isLoaded, totalResults, keyword } = this.props;
 
     const content =
       isLoaded && keyword ? <Spin size='large' /> : this.handleMoveListRender();
@@ -90,8 +92,13 @@ export default class MoveList extends Component {
       <section className='movies'>
         {isError ? errAlert : content}
         {!isError && nothingFound}
-        {tab && this.createPaginations()}
+        {this.createPaginations()}
       </section>
     );
   }
 }
+
+MoveList.propTypes = {
+  moveData: PropTypes.arrayOf(PropTypes.object),
+  handleAddRatingMovie: PropTypes.func,
+};

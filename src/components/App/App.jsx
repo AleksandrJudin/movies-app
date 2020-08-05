@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
-import MoveList from '../MoveList/MoveList';
+
+import MoveList from '../MoveList';
 import moviesData from '../../moviesData';
 import SearchPanel from '../SearchPanel';
+import { MoveGenreProvider } from '../MoviesGenresContext';
+
 import { Tabs } from 'antd';
 import { debounce } from 'lodash';
 import './App.css';
+import RatedList from '../RatedList';
 
 export default class App extends Component {
   state = {
@@ -14,6 +18,7 @@ export default class App extends Component {
     pages: 1,
     totalResults: null,
     sessionId: null,
+    genre: [],
     moveData: [],
     ratedData: [],
   };
@@ -23,10 +28,11 @@ export default class App extends Component {
   componentDidMount() {
     this.getGuestSessionId();
     this.updateMove(this.state.pages);
+    this.getMoveGenres();
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { keyword, pages, ratedData } = this.state;
+    const { keyword, pages } = this.state;
     if (keyword !== prevState.keyword) {
       this.updateMove();
     }
@@ -34,6 +40,14 @@ export default class App extends Component {
       this.updateMove(pages);
     }
   }
+
+  getMoveGenres = () => {
+    this.moveApi.getMoveGenre().then(({ genres }) => {
+      this.setState({
+        genre: genres,
+      });
+    });
+  };
 
   getGuestSessionId = () => {
     this.moveApi.getGuestSessionId().then((data) => {
@@ -106,35 +120,28 @@ export default class App extends Component {
     const { TabPane } = Tabs;
     return (
       <div className='container'>
-        <Tabs defaultActiveKey='1'>
-          <TabPane tab='Search' key='1'>
-            <SearchPanel
-              changeKeyword={this.changeKeyword}
-              keyword={this.state.keyword}
-            />
-            <MoveList
-              handleAddRatingMovie={this.handleAddRatingMovie}
-              keyword={keyword}
-              moveData={moveData}
-              isLoaded={isLoaded}
-              isError={isError}
-              totalResults={totalResults}
-              changePages={this.changePages}
-              tab='search'
-            />
-          </TabPane>
-          <TabPane tab='Rated' key='2'>
-            <MoveList
-              handleAddRatingMovie={this.handleAddRatingMovie}
-              keyword={keyword}
-              moveData={ratedData}
-              isLoaded={isLoaded}
-              isError={isError}
-              totalResults={totalResults}
-              changePages={this.changePages}
-            />
-          </TabPane>
-        </Tabs>
+        <MoveGenreProvider value={this.state.genre}>
+          <Tabs defaultActiveKey='1'>
+            <TabPane tab='Search' key='1'>
+              <SearchPanel
+                changeKeyword={this.changeKeyword}
+                keyword={this.state.keyword}
+              />
+              <MoveList
+                handleAddRatingMovie={this.handleAddRatingMovie}
+                keyword={keyword}
+                moveData={moveData}
+                isLoaded={isLoaded}
+                isError={isError}
+                totalResults={totalResults}
+                changePages={this.changePages}
+              />
+            </TabPane>
+            <TabPane tab='Rated' key='2'>
+              <RatedList data={ratedData} />
+            </TabPane>
+          </Tabs>
+        </MoveGenreProvider>
       </div>
     );
   }

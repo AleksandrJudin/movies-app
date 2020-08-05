@@ -43,7 +43,7 @@ export default class {
       value,
     };
     const res = await fetch(
-      `https://api.themoviedb.org/3/movie/${moviesId}/rating?api_key=${this.apiKey}&guest_session_id=${sessionId}`,
+      `${this.baseUrl}3/movie/${moviesId}/rating?api_key=${this.apiKey}&guest_session_id=${sessionId}`,
       {
         method: 'POST',
         body: JSON.stringify(data),

@@ -76,6 +76,7 @@
   padding: 3px 5px;
   border-radius: 2px;
   font-size: 12px;
+  margin-top: 5px;
 }
 
 .movies__genre ul li:not(:last-child) {

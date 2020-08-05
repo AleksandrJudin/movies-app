@@ -1,0 +1,25 @@
+.rated__list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.rated {
+  padding: 20px 0;
+}
+
+.ant-card {
+  margin: 20px 20px 0 0;
+  position: relative;
+  min-height: 400px;
+  padding-bottom: 20px;
+}
+
+.rated .ant-rate {
+  position: absolute;
+  top: 93%;
+}
+
+.ant-card-meta-description {
+  padding-bottom: 10px;
+}

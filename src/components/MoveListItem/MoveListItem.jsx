@@ -1,8 +1,9 @@
+/* eslint-disable react/no-unused-prop-types */
 import React, { Component } from 'react';
 import { Rate } from 'antd';
 import './MoveListItem.css';
-import { MoveGenreConsumer } from '../MoviesGenresContext';
 import PropTypes from 'prop-types';
+import { MoveGenreConsumer } from '../MoviesGenresContext';
 
 export default class MoveListItem extends Component {
   static defaultProps = {
@@ -19,9 +20,7 @@ export default class MoveListItem extends Component {
     id: 0,
     release: '',
     genreIds: [],
-  };
-  setCorrectDate = (date) => {
-    const monthNames = [
+    monthNames: [
       'January',
       'February',
       'March',
@@ -34,7 +33,11 @@ export default class MoveListItem extends Component {
       'October',
       'November',
       'December',
-    ];
+    ],
+  };
+
+  setCorrectDate = (date) => {
+    const { monthNames } = this.props;
     const year = new Date(date).getFullYear();
     const day = new Date(date).getDate();
     const mounth = new Date(date).getMonth();
@@ -56,7 +59,7 @@ export default class MoveListItem extends Component {
 
   abbrOverviews = (str) => {
     if (str.length > 100) {
-      return str.substring(0, 99) + '...';
+      return `${str.substring(0, 99)}...`;
     }
     if (str.length === 0) {
       return 'Информация отсутствует';
@@ -65,7 +68,7 @@ export default class MoveListItem extends Component {
   };
 
   getGenresById = (genres, ids) => {
-    let newArr = [];
+    const newArr = [];
     for (let i = 0; i < genres.length; i++) {
       for (let j = 0; j < ids.length; j++) {
         if (ids[j] === genres[i].id) {
@@ -78,24 +81,15 @@ export default class MoveListItem extends Component {
 
   createGenresList = (genres, ids) => {
     const list = this.getGenresById(genres, ids);
-    return list.map((elem, i) => (
-      <li key={i} className='genre__item'>
+    return list.map((elem) => (
+      <li key={Math.random()} className="genre__item">
         {elem}
       </li>
     ));
   };
 
   render() {
-    const {
-      poster,
-      title,
-      score,
-      overview,
-      handleAddRatingMovie,
-      id,
-      release,
-      genreIds,
-    } = this.props;
+    const { poster, title, score, overview, handleAddRatingMovie, id, release, genreIds } = this.props;
 
     const moveImg = poster
       ? `https://image.tmdb.org/t/p/original${poster}`
@@ -107,43 +101,36 @@ export default class MoveListItem extends Component {
 
     return (
       <MoveGenreConsumer>
-        {(genre) => {
+        {(genres) => {
           return (
-            <React.Fragment>
-              <a href='./' className='movies__link'>
-                <img src={moveImg} alt='' className='movies__image' />
+            <>
+              <a href="./" className="movies__link">
+                <img src={moveImg} alt="" className="movies__image" />
               </a>
 
-              <div className='movies__info'>
+              <div className="movies__info">
                 <div>
-                  <div className='card__wrapper'>
-                    <h3 className='movies__title'>{title}</h3>
-                    <div style={ratingBorderColor} className='movies__score'>
-                      <span className='score__count'>{score}</span>
+                  <div className="card__wrapper">
+                    <h3 className="movies__title">{title}</h3>
+                    <div style={ratingBorderColor} className="movies__score">
+                      <span className="score__count">{score}</span>
                     </div>
                   </div>
-                  <span className='movies__date'>
-                    {this.setCorrectDate(release)}
-                  </span>
-                  <div className='movies__genre'>
-                    <ul className='genre__list'>
-                      {this.createGenresList(genre, genreIds)}
-                    </ul>
+                  <span className="movies__date">{this.setCorrectDate(release)}</span>
+                  <div className="movies__genre">
+                    <ul className="genre__list">{this.createGenresList(genres, genreIds)}</ul>
                   </div>
-                  <p className='movies__description'>
-                    {this.abbrOverviews(overview)}
-                  </p>
+                  <p className="movies__description">{this.abbrOverviews(overview)}</p>
                 </div>
                 <Rate
                   idMovies={id}
                   count={10}
                   allowHalf
-                  onChange={(value) =>
-                    handleAddRatingMovie(this.props.id, value)
-                  }
+                  // eslint-disable-next-line react/destructuring-assignment
+                  onChange={(value) => handleAddRatingMovie(this.props.id, value)}
                 />
               </div>
-            </React.Fragment>
+            </>
           );
         }}
       </MoveGenreConsumer>
@@ -165,4 +152,5 @@ MoveListItem.propTypes = {
   id: PropTypes.number,
   release: PropTypes.string,
   genreIds: PropTypes.arrayOf(PropTypes.number),
+  monthNames: PropTypes.arrayOf(PropTypes.string),
 };

@@ -1,5 +1,6 @@
 export default class {
   baseUrl = 'https://api.themoviedb.org/';
+
   apiKey = '9c89cd5a5bf43d8b842fd5f040f42645';
 
   getMoveData = async (url) => {

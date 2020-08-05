@@ -1,3 +1,6 @@
+/* eslint-disable consistent-return */
+/* eslint-disable react/prop-types */
+/* eslint-disable import/order */
 import React, { Component } from 'react';
 import MoveListItem from '../MoveListItem';
 import { Spin, Alert, Pagination, Empty } from 'antd';
@@ -13,47 +16,48 @@ export default class MoveList extends Component {
 
   createMoveList = () => {
     const { moveData, handleAddRatingMovie } = this.props;
-    return moveData.map((moveData) => {
-      const {
-        poster_path,
-        release_date,
+    return moveData.map(
+      ({
+        poster_path: posterPath,
+        release_date: releaseDate,
         id,
         title,
-        vote_average,
+        vote_average: voteAverage,
         overview,
-        genre_ids,
-      } = moveData;
-
-      return (
-        <li className='movies__card' key={id}>
-          <MoveListItem
-            id={id}
-            poster={poster_path}
-            release={release_date}
-            title={title}
-            score={vote_average}
-            overview={overview}
-            handleAddRatingMovie={handleAddRatingMovie}
-            genreIds={genre_ids}
-          />
-        </li>
-      );
-    });
+        genre_ids: genreIds,
+      }) => {
+        return (
+          <li className="movies__card" key={id}>
+            <MoveListItem
+              id={id}
+              poster={posterPath}
+              release={releaseDate}
+              title={title}
+              score={voteAverage}
+              overview={overview}
+              handleAddRatingMovie={handleAddRatingMovie}
+              genreIds={genreIds}
+            />
+          </li>
+        );
+      }
+    );
   };
 
   handleMoveListRender = () => {
-    const { keyword } = this.props;
     let result = null;
-    if (keyword) {
-      result = <ul className='movies__list'>{this.createMoveList()}</ul>;
+    // eslint-disable-next-line react/destructuring-assignment
+    if (this.props.keyword) {
+      result = <ul className="movies__list">{this.createMoveList()}</ul>;
     } else {
-      result = <h2 className='main-title'>Введите название фильма</h2>;
+      result = <h2 className="main-title">Введите название фильма</h2>;
     }
     return result;
   };
 
-  handleChangePages = (n) => {
-    this.props.changePages(n);
+  handleChangePages = (page) => {
+    // eslint-disable-next-line react/destructuring-assignment
+    this.props.changePages(page);
   };
 
   createPaginations = () => {
@@ -74,22 +78,16 @@ export default class MoveList extends Component {
   render() {
     const { isError, isLoaded, totalResults, keyword } = this.props;
 
-    const content =
-      isLoaded && keyword ? <Spin size='large' /> : this.handleMoveListRender();
+    const content = isLoaded && keyword ? <Spin size="large" /> : this.handleMoveListRender();
 
     const nothingFound = !totalResults && keyword && !isLoaded && <Empty />;
 
     const errAlert = (
-      <Alert
-        message='Ошибка :('
-        description='Не могу получить данные с сервера'
-        type='error'
-        showIcon
-      />
+      <Alert message="Ошибка :(" description="Не могу получить данные с сервера" type="error" showIcon />
     );
 
     return (
-      <section className='movies'>
+      <section className="movies">
         {isError ? errAlert : content}
         {!isError && nothingFound}
         {this.createPaginations()}

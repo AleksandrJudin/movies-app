@@ -1,12 +1,14 @@
+/* eslint-disable react/no-unused-state */
+/* eslint-disable react/sort-comp */
 import React, { Component } from 'react';
 
+import { Tabs } from 'antd';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { debounce } from 'lodash';
 import MoveList from '../MoveList';
 import moviesData from '../../moviesData';
 import SearchPanel from '../SearchPanel';
 import { MoveGenreProvider } from '../MoviesGenresContext';
-
-import { Tabs } from 'antd';
-import { debounce } from 'lodash';
 import './App.css';
 import RatedList from '../RatedList';
 
@@ -18,16 +20,18 @@ export default class App extends Component {
     pages: 1,
     totalResults: null,
     sessionId: null,
-    genre: [],
+    genres: [],
     moveData: [],
     ratedData: [],
   };
 
+  // eslint-disable-next-line new-cap
   moveApi = new moviesData();
 
   componentDidMount() {
+    const { pages } = this.state;
     this.getGuestSessionId();
-    this.updateMove(this.state.pages);
+    this.updateMove(pages);
     this.getMoveGenres();
   }
 
@@ -44,7 +48,7 @@ export default class App extends Component {
   getMoveGenres = () => {
     this.moveApi.getMoveGenre().then(({ genres }) => {
       this.setState({
-        genre: genres,
+        genres,
       });
     });
   };
@@ -58,8 +62,9 @@ export default class App extends Component {
   };
 
   handleAddRatingMovie = (moveId, value) => {
-    this.moveApi.setRatedMovies(moveId, this.state.sessionId, value);
-    this.getGuestSessionRatedMovies(this.state.sessionId);
+    const { sessionId } = this.state;
+    this.moveApi.setRatedMovies(moveId, sessionId, value);
+    this.getGuestSessionRatedMovies(sessionId);
   };
 
   changeKeyword = debounce((value) => {
@@ -69,7 +74,7 @@ export default class App extends Component {
     });
   }, 800);
 
-  handleError = (err) => {
+  handleError = () => {
     this.setState({
       isError: true,
       isLoaded: false,
@@ -88,11 +93,11 @@ export default class App extends Component {
       this.moveApi
         .getMoveByKeyword(keyword, pages)
         .then((data) => {
-          const { results, total_results, total_pages } = data;
+          const { results, total_results: totalResults, total_pages: totalPages } = data;
           this.setState({
             moveData: results,
-            totalResults: total_results,
-            totalPages: total_pages,
+            totalResults,
+            totalPages,
             isLoaded: false,
           });
         })
@@ -109,24 +114,14 @@ export default class App extends Component {
   }, 1000);
 
   render() {
-    const {
-      keyword,
-      moveData,
-      isLoaded,
-      isError,
-      totalResults,
-      ratedData,
-    } = this.state;
+    const { keyword, moveData, isLoaded, isError, totalResults, ratedData, genres } = this.state;
     const { TabPane } = Tabs;
     return (
-      <div className='container'>
-        <MoveGenreProvider value={this.state.genre}>
-          <Tabs defaultActiveKey='1'>
-            <TabPane tab='Search' key='1'>
-              <SearchPanel
-                changeKeyword={this.changeKeyword}
-                keyword={this.state.keyword}
-              />
+      <div className="container">
+        <MoveGenreProvider value={genres}>
+          <Tabs defaultActiveKey="1">
+            <TabPane tab="Search" key="1">
+              <SearchPanel changeKeyword={this.changeKeyword} keyword={keyword} />
               <MoveList
                 handleAddRatingMovie={this.handleAddRatingMovie}
                 keyword={keyword}
@@ -137,7 +132,7 @@ export default class App extends Component {
                 changePages={this.changePages}
               />
             </TabPane>
-            <TabPane tab='Rated' key='2'>
+            <TabPane tab="Rated" key="2">
               <RatedList data={ratedData} />
             </TabPane>
           </Tabs>

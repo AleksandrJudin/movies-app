@@ -1,8 +1,8 @@
 .movies__list {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-column-gap: 100px;
-  grid-row-gap: 45px;
+  grid-column-gap: 90px;
+  grid-row-gap: 40px;
   list-style: none;
   padding: 0;
 }
@@ -35,4 +35,34 @@
 
 .ant-rate {
   margin-top: 10px;
+}
+
+@media screen and (max-width: 1200px) {
+  .movies__list {
+    grid-template-columns: 1fr;
+  }
+  .movies__card {
+    width: 100%;
+  }
+  .movies__info {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 460px) {
+  .movies__image {
+    width: 130px;
+  }
+  .movies__title {
+    font-size: 16px;
+  }
+  .movies__genre ul li:not(:last-child) {
+    margin-right: 4px;
+  }
+  .ant-rate {
+    font-size: 12px;
+  }
+  .rated__list {
+    justify-self: center;
+  }
 }

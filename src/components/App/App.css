@@ -3,11 +3,6 @@
   font-size: 0;
 }
 
-.container {
-  width: 1010px;
-  margin: 0 auto;
-}
-
 .movies {
   margin-top: 30px;
 }
@@ -19,4 +14,12 @@
 
 .ant-rate {
   font-size: 14px;
+}
+
+@media screen and (min-width: 1010px) {
+  .container {
+    width: auto;
+    padding: 0 82px;
+    overflow: hidden;
+  }
 }

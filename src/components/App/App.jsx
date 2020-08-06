@@ -93,7 +93,11 @@ export default class App extends Component {
       this.moveApi
         .getMoveByKeyword(keyword, pages)
         .then((data) => {
-          const { results, total_results: totalResults, total_pages: totalPages } = data;
+          const {
+            results,
+            total_results: totalResults,
+            total_pages: totalPages,
+          } = data;
           this.setState({
             moveData: results,
             totalResults,
@@ -114,14 +118,25 @@ export default class App extends Component {
   }, 1000);
 
   render() {
-    const { keyword, moveData, isLoaded, isError, totalResults, ratedData, genres } = this.state;
+    const {
+      keyword,
+      moveData,
+      isLoaded,
+      isError,
+      totalResults,
+      ratedData,
+      genres,
+    } = this.state;
     const { TabPane } = Tabs;
     return (
-      <div className="container">
+      <div className='container'>
         <MoveGenreProvider value={genres}>
-          <Tabs defaultActiveKey="1">
-            <TabPane tab="Search" key="1">
-              <SearchPanel changeKeyword={this.changeKeyword} keyword={keyword} />
+          <Tabs defaultActiveKey='1'>
+            <TabPane tab='Search' key='1'>
+              <SearchPanel
+                changeKeyword={this.changeKeyword}
+                keyword={keyword}
+              />
               <MoveList
                 handleAddRatingMovie={this.handleAddRatingMovie}
                 keyword={keyword}
@@ -132,7 +147,7 @@ export default class App extends Component {
                 changePages={this.changePages}
               />
             </TabPane>
-            <TabPane tab="Rated" key="2">
+            <TabPane tab='Rated' key='2'>
               <RatedList data={ratedData} />
             </TabPane>
           </Tabs>

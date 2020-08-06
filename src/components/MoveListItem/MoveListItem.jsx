@@ -81,8 +81,8 @@ export default class MoveListItem extends Component {
 
   createGenresList = (genres, ids) => {
     const list = this.getGenresById(genres, ids);
-    return list.map((elem) => (
-      <li key={Math.random()} className="genre__item">
+    return list.map((elem, i) => (
+      <li key={i + elem} className="genre__item">
         {elem}
       </li>
     ));
